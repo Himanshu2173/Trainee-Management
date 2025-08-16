@@ -1,0 +1,67 @@
+<h1>Welcome to trainee Manager</h1>
+<div>
+  <label>Select Mode: </label>
+  <button type="button" (click)="mode='add'; selectedId=null;">Add</button>
+  <button type="button" (click)="mode='update'; selectedId=null;">Update</button>
+  <button type="button" (click)="mode='delete'; selectedId=null;">Delete</button>
+</div>
+
+<div *ngIf="mode !== 'add'">
+  <label>Select Trainee ID:</label>
+  <select [(ngModel)]="selectedId" name="selectedId" (change)="onSelectId(selectedId!)">
+    <option *ngFor="let id of ids" [value]="id">{{ id }}</option>
+  </select>
+</div>
+
+<form #traineeForm="ngForm" (ngSubmit)="onSubmit(traineeForm)">
+  <div>
+    <label>Name:</label>
+    <input type="text" name="name" [(ngModel)]="trainee.name" [disabled]="mode !== 'add'" required />
+  </div>
+
+  <div>
+    <label>Stipend:</label>
+    <input type="number" name="stipend" [(ngModel)]="trainee.stipend" [disabled]="mode === 'delete'" required />
+  </div>
+
+  <div>
+    <label>Technology:</label>
+    <input type="text" name="technology" [(ngModel)]="trainee.technology" [disabled]="mode !== 'add'" required />
+  </div>
+
+  <div>
+    <button type="submit" *ngIf="mode==='add'">Add Trainee</button>
+    <button type="submit" *ngIf="mode==='update'">Update Trainee</button>
+    <button type="submit" *ngIf="mode==='delete'">Delete Trainee</button>
+  </div>
+
+  <div>
+    <button type="button" (click)="resetForm(traineeForm)">Reset</button>
+  </div>
+</form>
+<div style="margin-top:20px;">
+  <label>Select Technology:</label>
+  <select [(ngModel)]="selectedTech" name="tech" (change)="fetchByTechnology()">
+    <option value="">All</option>
+    <option *ngFor="let tech of technologies" [value]="tech">{{ tech }}</option>
+  </select>
+</div>
+<table *ngIf="trainees.length > 0" border="1" style="margin-top:20px;">
+  <caption>List of Employees</caption>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Stipend</th>
+      <th>Technology</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let t of trainees">
+      <td>{{t.id}}</td>
+      <td>{{t.name}}</td>
+      <td>{{t.stipend}}</td>
+      <td>{{t.technology}}</td>
+    </tr>
+  </tbody>
+</table>
