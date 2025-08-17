@@ -1,4 +1,5 @@
-<h1>Welcome to trainee Manager</h1>
+<h1>Welcome to Trainee Manager</h1>
+
 <div>
   <label>Select Mode: </label>
   <button type="button" (click)="mode='add'; selectedId=null;">Add</button>
@@ -14,24 +15,40 @@
 </div>
 
 <form #traineeForm="ngForm" (ngSubmit)="onSubmit(traineeForm)">
+
   <div>
     <label>Name:</label>
-    <input type="text" name="name" [(ngModel)]="trainee.name" [disabled]="mode !== 'add'" required />
+    <input type="text" name="name" [(ngModel)]="trainee.name" [disabled]="mode !== 'add'" required minlength="3"
+      #name="ngModel" />
+    <div *ngIf="name.invalid && (name.dirty || name.touched)" style="color:red">
+      <div *ngIf="name.errors?.['required']">Name is required.</div>
+      <div *ngIf="name.errors?.['minlength']">Name must be at least 3 characters long.</div>
+    </div>
   </div>
 
   <div>
     <label>Stipend:</label>
-    <input type="number" name="stipend" [(ngModel)]="trainee.stipend" [disabled]="mode === 'delete'" required />
+    <input type="number" name="stipend" [(ngModel)]="trainee.stipend" [disabled]="mode === 'delete'" required min="1000"
+      #stipend="ngModel" />
+    <div *ngIf="stipend.invalid && (stipend.dirty || stipend.touched)" style="color:red">
+      <div *ngIf="stipend.errors?.['required']">Stipend is required.</div>
+      <div *ngIf="stipend.errors?.['min']">Stipend must be at least 1000.</div>
+    </div>
   </div>
 
   <div>
     <label>Technology:</label>
-    <input type="text" name="technology" [(ngModel)]="trainee.technology" [disabled]="mode !== 'add'" required />
+    <input type="text" name="technology" [(ngModel)]="trainee.technology" [disabled]="mode !== 'add'" required
+      pattern="^[a-zA-Z]+$" #technology="ngModel" />
+    <div *ngIf="technology.invalid && (technology.dirty || technology.touched)" style="color:red">
+      <div *ngIf="technology.errors?.['required']">Technology is required.</div>
+      <div *ngIf="technology.errors?.['pattern']">Technology must contain only letters.</div>
+    </div>
   </div>
 
   <div>
-    <button type="submit" *ngIf="mode==='add'">Add Trainee</button>
-    <button type="submit" *ngIf="mode==='update'">Update Trainee</button>
+    <button type="submit" *ngIf="mode==='add'" [disabled]="traineeForm.invalid">Add Trainee</button>
+    <button type="submit" *ngIf="mode==='update'" [disabled]="traineeForm.invalid">Update Trainee</button>
     <button type="submit" *ngIf="mode==='delete'">Delete Trainee</button>
   </div>
 
@@ -39,6 +56,7 @@
     <button type="button" (click)="resetForm(traineeForm)">Reset</button>
   </div>
 </form>
+
 <div style="margin-top:20px;">
   <label>Select Technology:</label>
   <select [(ngModel)]="selectedTech" name="tech" (change)="fetchByTechnology()">
@@ -46,6 +64,7 @@
     <option *ngFor="let tech of technologies" [value]="tech">{{ tech }}</option>
   </select>
 </div>
+
 <table *ngIf="trainees.length > 0" border="1" style="margin-top:20px;">
   <caption>List of Employees</caption>
   <thead>
